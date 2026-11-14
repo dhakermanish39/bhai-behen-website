@@ -1,0 +1,329 @@
+<title>Bhai Behen Dhamaka</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Nunito:wght@400;600;800&display=swap">
+<style>
+/* Layout: sticky pill nav, big playful hero with name card, then stacked sections (meter, coupons, yaadein, wish shuffler). Sticker-style cards with offset shadows. */
+:root{
+  --bg:#fff7ec; --surface:#ffffff; --fg:#2b1d3a; --muted:#6b5a7b;
+  --pink:#ff4f81; --sun:#ffb703; --sky:#2ec4f1; --mint:#2fd4a0; --line:#2b1d3a;
+  --pink-soft:#ffe0ea; --sun-soft:#fff1c2; --sky-soft:#d9f4fd; --mint-soft:#d3f7ea;
+  --font-display:'Baloo 2','Trebuchet MS',system-ui,sans-serif;
+  --font-body:'Nunito',system-ui,-apple-system,'Segoe UI',sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#1b1226; --surface:#2a1d3a; --fg:#fdf3e6; --muted:#c3b3d6; --line:#fdf3e6;
+  --pink:#ff6b96; --sun:#ffc933; --sky:#45cdf5; --mint:#3fe0ae;
+  --pink-soft:#4a2140; --sun-soft:#4a3a1c; --sky-soft:#1d3a4a; --mint-soft:#1b4236; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#1b1226; --surface:#2a1d3a; --fg:#fdf3e6; --muted:#c3b3d6; --line:#fdf3e6;
+  --pink:#ff6b96; --sun:#ffc933; --sky:#45cdf5; --mint:#3fe0ae;
+  --pink-soft:#4a2140; --sun-soft:#4a3a1c; --sky-soft:#1d3a4a; --mint-soft:#1b4236; color-scheme:dark}
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:17px;line-height:1.55;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
+  padding-block:0;overflow-x:hidden}
+h1,h2,h3{font-family:var(--font-display);line-height:1.1;margin:0;text-wrap:balance;letter-spacing:-.01em}
+p{margin:0}
+.wrap{max-width:1040px;margin:0 auto}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--sky);outline-offset:3px;border-radius:8px}
+
+/* nav */
+nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;padding:12px 0}
+.navin{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;
+  background:var(--surface);border:2.5px solid var(--line);border-radius:999px;padding:8px 10px 8px 20px;box-shadow:4px 4px 0 var(--line)}
+.logo{font-family:var(--font-display);font-weight:800;font-size:1.25rem}
+.logo i{font-style:normal;color:var(--pink)}
+.links{display:flex;gap:4px;flex-wrap:wrap}
+.links a{text-decoration:none;font-weight:800;font-size:.9rem;padding:6px 12px;border-radius:999px}
+.links a:hover{background:var(--sun-soft)}
+
+/* buttons */
+.btn{font-family:var(--font-display);font-weight:700;font-size:1.1rem;color:#2b1d3a;background:var(--sun);
+  border:2.5px solid var(--line);border-radius:16px;padding:10px 22px;cursor:pointer;box-shadow:4px 4px 0 var(--line);
+  transition:transform .12s,box-shadow .12s}
+.btn:hover{transform:translate(-2px,-2px);box-shadow:6px 6px 0 var(--line)}
+.btn:active{transform:translate(3px,3px);box-shadow:1px 1px 0 var(--line)}
+.btn.pink{background:var(--pink);color:#fff}
+.btn.ghost{background:var(--surface);color:var(--fg)}
+
+/* hero */
+.hero{display:grid;grid-template-columns:1.15fr .85fr;gap:32px;align-items:center;padding:40px 0 56px}
+.tag{display:inline-block;font-weight:800;font-size:.85rem;letter-spacing:.08em;text-transform:uppercase;
+  background:var(--mint-soft);border:2px solid var(--line);border-radius:999px;padding:4px 14px;margin-bottom:18px}
+.hero h1{font-size:clamp(2.6rem,7.5vw,5rem);font-weight:800}
+.hero h1 .nm{color:var(--pink);display:inline-block;transform:rotate(-2deg);text-decoration:underline wavy var(--sun);text-underline-offset:8px;text-decoration-thickness:4px}
+.hero .sub{margin:20px 0 28px;font-size:1.15rem;color:var(--muted);max-width:34ch}
+.cta{display:flex;gap:14px;flex-wrap:wrap}
+.surprise{margin-top:22px;min-height:3.2em;font-family:var(--font-display);font-size:1.3rem;font-weight:700;color:var(--pink)}
+
+.card{background:var(--surface);border:2.5px solid var(--line);border-radius:24px;box-shadow:7px 7px 0 var(--line);padding:24px;min-width:0}
+.namecard{transform:rotate(2deg)}
+.namecard h3{font-size:1.5rem;margin-bottom:14px}
+.field{display:block;margin-bottom:14px}
+.field span{display:block;font-weight:800;font-size:.85rem;margin-bottom:4px;color:var(--muted)}
+.field input{width:100%;font:inherit;font-weight:800;font-size:1.1rem;color:var(--fg);background:var(--bg);
+  border:2.5px solid var(--line);border-radius:12px;padding:10px 14px}
+.hint{font-size:.85rem;color:var(--muted)}
+
+/* sections */
+section{padding:44px 0;scroll-margin-top:80px}
+.head{margin-bottom:28px;max-width:640px}
+.head h2{font-size:clamp(2rem,5vw,3rem);font-weight:800}
+.head p{color:var(--muted);margin-top:8px}
+.squig{display:inline-block;background:var(--sun);padding:0 .25em;border-radius:10px;transform:rotate(-1.5deg)}
+
+/* meter */
+.meters{display:grid;gap:18px}
+.meter{display:grid;grid-template-columns:minmax(120px,200px) 1fr 64px;gap:14px;align-items:center}
+.meter b{font-family:var(--font-display);font-size:1.15rem}
+.track{height:26px;background:var(--bg);border:2.5px solid var(--line);border-radius:999px;overflow:hidden}
+.fill{height:100%;width:0;border-right:2.5px solid var(--line);transition:width 1.4s cubic-bezier(.2,.9,.3,1.2)}
+.meter output{font-family:var(--font-display);font-weight:800;font-size:1.2rem;text-align:right}
+
+/* coupons */
+.coupons{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:20px}
+.coupon{position:relative;text-align:left;font:inherit;color:var(--fg);cursor:pointer;
+  border:2.5px dashed var(--line);border-radius:20px;padding:20px 20px 18px;transition:transform .15s}
+.coupon:hover{transform:rotate(-1.2deg) translateY(-3px)}
+.coupon:nth-child(4n+1){background:var(--pink-soft)}
+.coupon:nth-child(4n+2){background:var(--sun-soft)}
+.coupon:nth-child(4n+3){background:var(--sky-soft)}
+.coupon:nth-child(4n){background:var(--mint-soft)}
+.coupon small{font-weight:800;letter-spacing:.08em;text-transform:uppercase;font-size:.72rem;color:var(--muted)}
+.coupon h3{font-size:1.4rem;margin:6px 0 6px}
+.coupon p{font-size:.95rem}
+.coupon .stamp{position:absolute;right:14px;top:14px;font-family:var(--font-display);font-weight:800;font-size:1rem;
+  color:var(--pink);border:3px solid var(--pink);border-radius:10px;padding:0 10px;transform:rotate(12deg) scale(0);transition:transform .25s cubic-bezier(.3,1.6,.5,1);background:var(--surface)}
+.coupon.used{opacity:.75}
+.coupon.used .stamp{transform:rotate(12deg) scale(1)}
+.coupon.used h3{text-decoration:line-through}
+
+/* memories */
+.mem{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:22px}
+.mem .card{padding:18px}
+.mem .card:nth-child(odd){transform:rotate(-1.5deg)}
+.mem .card:nth-child(even){transform:rotate(1.5deg)}
+.photo{aspect-ratio:4/3;border:2.5px solid var(--line);border-radius:14px;margin-bottom:12px;display:grid;place-items:center;overflow:hidden}
+.photo svg{width:62%;height:auto}
+.mem .card:nth-child(1) .photo{background:var(--pink-soft)}
+.mem .card:nth-child(2) .photo{background:var(--sky-soft)}
+.mem .card:nth-child(3) .photo{background:var(--sun-soft)}
+.mem .card:nth-child(4) .photo{background:var(--mint-soft)}
+.mem h3{font-size:1.2rem}
+.mem p{font-size:.95rem;color:var(--muted);outline-offset:4px;border-radius:6px}
+.mem p:focus{background:var(--sun-soft);color:var(--fg)}
+
+/* wish */
+.wish{display:grid;grid-template-columns:1fr 1fr;gap:28px;align-items:stretch}
+.wishcard{background:var(--pink);color:#fff;display:flex;flex-direction:column;justify-content:space-between;gap:20px;min-height:260px}
+.wishcard .to{font-family:var(--font-display);font-weight:700;font-size:1.1rem;opacity:.95}
+.wishcard blockquote{margin:0;font-family:var(--font-display);font-weight:700;font-size:clamp(1.4rem,3.2vw,1.9rem);line-height:1.25}
+.wishcard .from{font-weight:800;text-align:right}
+.wishside{display:flex;flex-direction:column;gap:16px;justify-content:center}
+.wishside p{color:var(--muted)}
+.row{display:flex;gap:12px;flex-wrap:wrap}
+
+.more{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:24px}
+.more a{text-decoration:none;color:var(--fg);display:flex;flex-direction:column;gap:10px;transition:transform .15s}
+.more a:hover{transform:translate(-3px,-3px) rotate(-.6deg)}
+.more a:nth-child(1){background:var(--mint-soft)}
+.more a:nth-child(2){background:var(--sky-soft)}
+.more h3{font-size:1.7rem}
+.more p{color:var(--muted)}
+.more .go{font-family:var(--font-display);font-weight:800;color:var(--pink)}
+footer{padding:36px 0 56px;text-align:center;font-family:var(--font-display);font-size:1.2rem;font-weight:700}
+footer span{color:var(--pink)}
+canvas#fx{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:50}
+
+@media (max-width:760px){
+  .hero,.wish{grid-template-columns:1fr}
+  .namecard{transform:none}
+  .meter{grid-template-columns:1fr 56px}
+  .meter b{grid-column:1/-1}
+  .links a{padding:6px 9px;font-size:.82rem}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+
+<nav><div class="wrap navin">
+  <div class="logo">Bhai <i>&hearts;</i> Behen</div>
+  <div class="links"><a href="#meter">Meter</a><a href="#coupons">Coupons</a><a href="#yaadein">Yaadein</a><a href="#wish">Wish</a><a href="game.html">Game</a><a href="photos.html">Photos</a></div>
+</div></nav>
+
+<main class="wrap">
+<header class="hero">
+  <div>
+    <span class="tag">14 November &middot; Bal Diwas</span>
+    <h1>Happy Children's Day, <span class="nm" id="nmH">Behna</span>!</h1>
+    <p class="sub">Khoon ka rishta nahi hai, par dil ka rishta sabse pakka hai. Tu meri behen hai, bas itna kaafi hai.</p>
+    <div class="cta">
+      <button class="btn pink" id="boom" type="button">Surprise kholo</button>
+      <a class="btn ghost" href="#coupons" style="text-decoration:none">Coupons dekho</a>
+    </div>
+    <p class="surprise" id="sur" aria-live="polite"></p>
+  </div>
+  <aside class="card namecard">
+    <h3>Apna naam likho</h3>
+    <label class="field"><span>Behen ka naam</span><input id="inSis" value="Behna" maxlength="20" autocomplete="off"></label>
+    <label class="field"><span>Bhai ka naam</span><input id="inBro" value="Tera Bhai" maxlength="20" autocomplete="off"></label>
+    <p class="hint">Naam badlo, poori website tumhare naam se ban jayegi.</p>
+  </aside>
+</header>
+
+<section id="meter">
+  <div class="head"><h2>Hamari <span class="squig">Masti Meter</span></h2><p>Bhai-behen ke rishte ka sachcha hisaab. Meter ko dobara chalane ke liye button dabao.</p></div>
+  <div class="card">
+    <div class="meters" id="meters"></div>
+    <div class="row" style="margin-top:24px"><button class="btn ghost" id="again" type="button">Phir se naapo</button></div>
+  </div>
+</section>
+
+<section id="coupons">
+  <div class="head"><h2>Bhai ke <span class="squig">Special Coupons</span></h2><p>Kisi bhi coupon par tap karo, wo "Redeem" ho jayega. Bhai ko mana karne ki ijazat nahi hai.</p></div>
+  <div class="coupons" id="cgrid"></div>
+</section>
+
+<section id="yaadein">
+  <div class="head"><h2>Hamari <span class="squig">Yaadein</span></h2><p>Neeche likhe line par click karke apni asli yaad likh do.</p></div>
+  <div class="mem">
+    <article class="card"><div class="photo"><svg viewBox="0 0 100 80" aria-hidden="true"><rect x="22" y="30" width="56" height="38" rx="8" fill="#ffb703" stroke="#2b1d3a" stroke-width="3"/><path d="M22 40h56M50 30v38" stroke="#2b1d3a" stroke-width="3"/><circle cx="50" cy="22" r="8" fill="#ff4f81" stroke="#2b1d3a" stroke-width="3"/></svg></div><h3>Chocolate chori</h3><p contenteditable="true" spellcheck="false">Jab tune meri chocolate chupke se kha li aur kaha, "Maine nahi khayi."</p></article>
+    <article class="card"><div class="photo"><svg viewBox="0 0 100 80" aria-hidden="true"><circle cx="30" cy="48" r="14" fill="#fff" stroke="#2b1d3a" stroke-width="3"/><circle cx="70" cy="48" r="14" fill="#fff" stroke="#2b1d3a" stroke-width="3"/><path d="M44 48h12M30 34l20-14 20 14" fill="none" stroke="#2b1d3a" stroke-width="3"/></svg></div><h3>Cycle ki race</h3><p contenteditable="true" spellcheck="false">Gali mein cycle race, aur har baar bahana ki brake kharab thi.</p></article>
+    <article class="card"><div class="photo"><svg viewBox="0 0 100 80" aria-hidden="true"><rect x="18" y="16" width="64" height="44" rx="6" fill="#fff" stroke="#2b1d3a" stroke-width="3"/><path d="M26 28h48M26 38h48M26 48h30" stroke="#2ec4f1" stroke-width="3" stroke-linecap="round"/></svg></div><h3>Exam wali raat</h3><p contenteditable="true" spellcheck="false">Exam se pehle wali raat ki padhai aur raat bhar ki ladai.</p></article>
+    <article class="card"><div class="photo"><svg viewBox="0 0 100 80" aria-hidden="true"><path d="M50 66C20 46 18 22 36 18c8-2 14 4 14 10 0-6 6-12 14-10 18 4 16 28-14 48z" fill="#ff4f81" stroke="#2b1d3a" stroke-width="3" stroke-linejoin="round"/></svg></div><h3>Jab sab theek tha</h3><p contenteditable="true" spellcheck="false">Jab bhi mushkil aayi, tu sabse pehle mere paas aayi. Hamesha aise hi aana.</p></article>
+  </div>
+</section>
+
+<section id="wish">
+  <div class="head"><h2>Dil se <span class="squig">Wish Card</span></h2><p>Naya message dekhne ke liye button dabao. Pasand aaye to screenshot le lo.</p></div>
+  <div class="wish">
+    <div class="card wishcard">
+      <div class="to" id="wTo">Pyaari Behna ke liye</div>
+      <blockquote id="wMsg">Rab ne bhai-behen ka rishta nahi diya, par maine tujhe khud chuna hai.</blockquote>
+      <div class="from" id="wFrom">&mdash; Tera Bhai</div>
+    </div>
+    <div class="wishside">
+      <p>Har message alag hai. Kuch pyaar wale, kuch masti wale.</p>
+      <div class="row"><button class="btn" id="nextW" type="button">Naya message</button><button class="btn ghost" id="copyW" type="button">Copy karo</button></div>
+      <p class="hint" id="copied" aria-live="polite"></p>
+    </div>
+  </div>
+</section>
+<section id="more">
+  <div class="head"><h2>Aur bhi <span class="squig">Masti</span></h2><p>Do naye page: ek game aur ek photo wall.</p></div>
+  <div class="more">
+    <a class="card" href="game.html"><h3>Chocolate Game</h3><p>Tokri se chocolate pakdo, karele se bacho, aur bhai ka record todo.</p><span class="go">Khelo &rarr;</span></a>
+    <a class="card" href="photos.html"><h3>Photo Wall</h3><p>Hamari sabse pyaari photo jodo aur polaroid ki tarah sajao.</p><span class="go">Dekho &rarr;</span></a>
+  </div>
+</section>
+</main>
+
+<footer>Banaya gaya pyaar se, <span id="fBro">Tera Bhai</span> ki taraf se &hearts;</footer>
+<canvas id="fx" aria-hidden="true"></canvas>
+
+<script>
+(function(){
+  var $=function(i){return document.getElementById(i)};
+  var store={get:function(k,d){try{var v=localStorage.getItem(k);return v===null?d:v}catch(e){return d}},
+             set:function(k,v){try{localStorage.setItem(k,v)}catch(e){}}};
+  var sis=store.get('bb_sis','Behna'), bro=store.get('bb_bro','Tera Bhai');
+
+  function paint(){
+    var s=sis.trim()||'Behna', b=bro.trim()||'Tera Bhai';
+    $('nmH').textContent=s; $('wTo').textContent='Pyaari '+s+' ke liye';
+    $('wFrom').textContent='— '+b; $('fBro').textContent=b;
+  }
+  $('inSis').value=sis; $('inBro').value=bro; paint();
+  $('inSis').addEventListener('input',function(e){sis=e.target.value;store.set('bb_sis',sis);paint()});
+  $('inBro').addEventListener('input',function(e){bro=e.target.value;store.set('bb_bro',bro);paint()});
+
+  /* confetti */
+  var cv=$('fx'), cx=cv.getContext('2d'), bits=[], raf=0;
+  var cols=['#ff4f81','#ffb703','#2ec4f1','#2fd4a0','#b388ff'];
+  function size(){cv.width=innerWidth;cv.height=innerHeight}
+  size(); addEventListener('resize',size);
+  function boom(){
+    if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+    for(var i=0;i<140;i++){bits.push({x:innerWidth/2,y:innerHeight*.45,vx:(Math.random()-.5)*16,vy:-Math.random()*15-4,
+      w:6+Math.random()*8,h:4+Math.random()*6,r:Math.random()*6,vr:(Math.random()-.5)*.4,c:cols[i%cols.length],life:140})}
+    if(!raf)raf=requestAnimationFrame(tick);
+  }
+  function tick(){
+    cx.clearRect(0,0,cv.width,cv.height);
+    bits=bits.filter(function(p){return p.life>0&&p.y<cv.height+20});
+    bits.forEach(function(p){p.vy+=.4;p.vx*=.99;p.x+=p.vx;p.y+=p.vy;p.r+=p.vr;p.life--;
+      cx.save();cx.translate(p.x,p.y);cx.rotate(p.r);cx.fillStyle=p.c;cx.fillRect(-p.w/2,-p.h/2,p.w,p.h);cx.restore()});
+    raf=bits.length?requestAnimationFrame(tick):0;
+    if(!raf)cx.clearRect(0,0,cv.width,cv.height);
+  }
+  var surp=['Tu meri duniya ki sabse pyaari pareshani hai.','Aaj tere liye saari chocolate meri taraf se.','Rishte sirf khoon ke nahi, dil ke bhi hote hain.','Tu hamesha meri behen rahegi, chahe duniya kuch bhi kahe.'];
+  var si=0;
+  $('boom').addEventListener('click',function(){
+    boom(); $('sur').textContent=surp[si%surp.length]; si++;
+  });
+
+  /* meter */
+  var items=[['Ladai',92,'var(--pink)'],['Pyaar',100,'var(--sun)'],['Chocolate chori',78,'var(--sky)'],['Raaz chhupana',88,'var(--mint)'],['Ek dusre ki madad',97,'var(--pink)']];
+  var mw=$('meters');
+  items.forEach(function(it){
+    var d=document.createElement('div');d.className='meter';
+    d.innerHTML='<b>'+it[0]+'</b><div class="track"><div class="fill" style="background:'+it[2]+'"></div></div><output>0%</output>';
+    mw.appendChild(d);
+  });
+  function run(){
+    [].forEach.call(mw.children,function(row,i){
+      var f=row.querySelector('.fill'),o=row.querySelector('output');
+      f.style.width='0%';o.textContent='0%';
+      setTimeout(function(){f.style.width=items[i][1]+'%';
+        var n=0,t=setInterval(function(){n+=3;if(n>=items[i][1]){n=items[i][1];clearInterval(t)}o.textContent=n+'%'},28)},120+i*160);
+    });
+  }
+  $('again').addEventListener('click',run);
+  var seen=false;
+  if('IntersectionObserver' in window){
+    new IntersectionObserver(function(es,ob){es.forEach(function(e){if(e.isIntersecting&&!seen){seen=true;run();ob.disconnect()}})},{threshold:.3}).observe($('meter'));
+  }else run();
+  /* resting state: fill is visible even if observer never fires */
+  setTimeout(function(){if(!seen){seen=true;run()}},1500);
+
+  /* coupons */
+  var cps=[['Free pass','Ek din ka Bhai Taxi','Jahan bolegi, wahan bike par chhod dunga.'],
+           ['Treat','Golgappe Party','Jitne khane hain, utne. Paise bhai ke.'],
+           ['Chhut','Kaam se Chhutti','Aaj ka ghar ka ek kaam, bhai karega.'],
+           ['Remote','Remote ka Raaj','Ek poori movie, tera pasand ka channel.'],
+           ['Sorry','Sorry Coupon','Ek ladai mein bina argument ke sorry.'],
+           ['Gift','Shopping Surprise','Ek chhota sa gift, tera favourite.']];
+  var used={};try{used=JSON.parse(store.get('bb_used','{}'))||{}}catch(e){}
+  var g=$('cgrid');
+  cps.forEach(function(c,i){
+    var b=document.createElement('button');b.type='button';b.className='coupon'+(used[i]?' used':'');
+    b.setAttribute('aria-pressed',used[i]?'true':'false');
+    b.innerHTML='<small>'+c[0]+'</small><h3>'+c[1]+'</h3><p>'+c[2]+'</p><span class="stamp">REDEEMED</span>';
+    b.addEventListener('click',function(){
+      var u=b.classList.toggle('used');used[i]=u;b.setAttribute('aria-pressed',u);
+      store.set('bb_used',JSON.stringify(used));if(u)boom();
+    });
+    g.appendChild(b);
+  });
+
+  /* wishes */
+  var wishes=['Rab ne bhai-behen ka rishta nahi diya, par maine tujhe khud chuna hai.',
+    'Bal Diwas mubarak! Tu meri zindagi ki sabse pyaari kamai hai.',
+    'Rishta khoon ka nahi, bharose ka hai, aur wahi sabse mazboot hota hai.',
+    'Tere bina ghar mein sab kuch hai, bas rounak nahi.',
+    'Ladte rahenge, hanste rahenge, aur saath hamesha rahenge.',
+    'Duniya kuch bhi kahe, tu hamesha meri favourite insaan rahegi.',
+    'Chocolate chura lena, par meri duaon mein se kabhi mat jana.',
+    'Tu jahan bhi ho, bhai ka pyaar hamesha tere saath hai.'];
+  var wi=0;
+  function showW(){$('wMsg').textContent=wishes[wi%wishes.length]}
+  $('nextW').addEventListener('click',function(){wi++;showW();$('copied').textContent=''});
+  $('copyW').addEventListener('click',function(){
+    var t=$('wMsg').textContent+' '+$('wFrom').textContent;
+    var done=function(m){$('copied').textContent=m};
+    try{navigator.clipboard.writeText(t).then(function(){done('Copy ho gaya!')},function(){done('Message ko select karke copy kar lo.')})}
+    catch(e){done('Message ko select karke copy kar lo.')}
+  });
+})();
+</script>

@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="hi"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="claude:viewport-fit-sides" content="cover">
+<title>Hamari Photo Wall</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Nunito:wght@400;600;800&display=swap">
+<style>
+/* Layout: nav, heading with upload button and drop zone, then a wall of tilted polaroid cards with editable captions and a full-screen viewer. */
+:root{
+  --bg:#fff7ec; --surface:#ffffff; --fg:#2b1d3a; --muted:#6b5a7b; --line:#2b1d3a;
+  --pink:#ff4f81; --sun:#ffb703; --sky:#2ec4f1; --mint:#2fd4a0;
+  --pink-soft:#ffe0ea; --sun-soft:#fff1c2; --sky-soft:#d9f4fd; --mint-soft:#d3f7ea;
+  --font-display:'Baloo 2','Trebuchet MS',system-ui,sans-serif;
+  --font-body:'Nunito',system-ui,-apple-system,'Segoe UI',sans-serif; color-scheme:light;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#1b1226; --surface:#2a1d3a; --fg:#fdf3e6; --muted:#c3b3d6; --line:#fdf3e6;
+  --pink:#ff6b96; --sun:#ffc933; --sky:#45cdf5; --mint:#3fe0ae;
+  --pink-soft:#4a2140; --sun-soft:#4a3a1c; --sky-soft:#1d3a4a; --mint-soft:#1b4236; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#1b1226; --surface:#2a1d3a; --fg:#fdf3e6; --muted:#c3b3d6; --line:#fdf3e6;
+  --pink:#ff6b96; --sun:#ffc933; --sky:#45cdf5; --mint:#3fe0ae;
+  --pink-soft:#4a2140; --sun-soft:#4a3a1c; --sky-soft:#1d3a4a; --mint-soft:#1b4236; color-scheme:dark}
+:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:17px;line-height:1.55;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0;overflow-x:hidden}
+h1,h2,h3{font-family:var(--font-display);line-height:1.1;margin:0;text-wrap:balance}
+p{margin:0}
+.wrap{max-width:1040px;margin:0 auto}
+:focus-visible{outline:3px solid var(--sky);outline-offset:3px;border-radius:8px}
+nav{padding:12px 0}
+.navin{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;background:var(--surface);
+  border:2.5px solid var(--line);border-radius:999px;padding:8px 10px 8px 20px;box-shadow:4px 4px 0 var(--line)}
+.logo{font-family:var(--font-display);font-weight:800;font-size:1.25rem;text-decoration:none;color:inherit}
+.logo i{font-style:normal;color:var(--pink)}
+.links{display:flex;gap:4px;flex-wrap:wrap}
+.links a{text-decoration:none;color:inherit;font-weight:800;font-size:.9rem;padding:6px 12px;border-radius:999px}
+.links a:hover,.links a[aria-current]{background:var(--sun-soft)}
+.btn{font-family:var(--font-display);font-weight:700;font-size:1.15rem;color:#2b1d3a;background:var(--sun);
+  border:2.5px solid var(--line);border-radius:16px;padding:10px 24px;cursor:pointer;box-shadow:4px 4px 0 var(--line);transition:transform .12s,box-shadow .12s;display:inline-block}
+.btn:hover{transform:translate(-2px,-2px);box-shadow:6px 6px 0 var(--line)}
+.btn:active{transform:translate(3px,3px);box-shadow:1px 1px 0 var(--line)}
+.btn.pink{background:var(--pink);color:#fff}
+.btn.ghost{background:var(--surface);color:var(--fg)}
+
+.top{display:flex;justify-content:space-between;align-items:end;gap:20px;flex-wrap:wrap;padding:28px 0 22px}
+.top h1{font-size:clamp(2.2rem,6vw,3.6rem);font-weight:800}
+.top h1 span{background:var(--sky);color:#2b1d3a;padding:0 .2em;border-radius:10px;display:inline-block;transform:rotate(-1.5deg)}
+.top p{color:var(--muted);margin-top:10px;max-width:46ch}
+.upl{display:flex;gap:12px;flex-wrap:wrap}
+input[type=file]{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none}
+.drop{border:3px dashed var(--line);border-radius:22px;padding:20px;text-align:center;background:var(--surface);margin-bottom:26px;color:var(--muted);font-weight:800}
+.drop.over{background:var(--mint-soft);color:var(--fg)}
+.note{font-size:.9rem;color:var(--muted);margin:0 0 26px}
+.status{min-height:1.5em;font-weight:800;color:var(--pink);margin-bottom:12px}
+
+.wall{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:30px 24px;padding:6px 0 60px}
+.pol{background:var(--surface);border:2.5px solid var(--line);border-radius:12px;box-shadow:6px 6px 0 var(--line);padding:12px 12px 14px;
+  display:flex;flex-direction:column;gap:10px;min-width:0;position:relative}
+.pol:nth-child(3n+1){transform:rotate(-2deg)}
+.pol:nth-child(3n+2){transform:rotate(1.5deg)}
+.pol:nth-child(3n){transform:rotate(-.8deg)}
+.pol .ph{aspect-ratio:1/1;border:2.5px solid var(--line);border-radius:6px;overflow:hidden;background:var(--sky-soft);padding:0;cursor:zoom-in;width:100%;display:block}
+.pol .ph img{width:100%;height:100%;object-fit:cover;display:block}
+.pol input.cap{width:100%;font-family:var(--font-display);font-weight:700;font-size:1.1rem;color:var(--fg);background:transparent;
+  border:0;border-bottom:2px dashed var(--muted);padding:2px 0;text-align:center}
+.pol .del{position:absolute;top:-12px;right:-12px;width:34px;height:34px;border-radius:50%;border:2.5px solid var(--line);
+  background:var(--pink);color:#fff;font-weight:800;font-size:1.1rem;line-height:1;cursor:pointer}
+.sample .ph{display:grid;place-items:center;cursor:default}
+.sample .ph svg{width:46%;height:auto}
+.sample:nth-child(1) .ph{background:var(--pink-soft)}
+.sample:nth-child(2) .ph{background:var(--sun-soft)}
+.sample:nth-child(3) .ph{background:var(--mint-soft)}
+.sample .cap{font-family:var(--font-display);font-weight:700;font-size:1.1rem;text-align:center;color:var(--muted)}
+
+.view{position:fixed;inset:0;z-index:60;background:rgba(20,10,30,.9);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;
+  padding:max(16px,env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) max(16px,env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px))}
+.view[hidden]{display:none}
+.view img{max-width:100%;max-height:78vh;border:3px solid #fff;border-radius:10px;background:#fff}
+.view p{color:#fff;font-family:var(--font-display);font-weight:700;font-size:1.3rem;text-align:center}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style></head>
+<body>
+<nav><div class="wrap navin">
+  <a class="logo" href="index.html">Bhai <i>&hearts;</i> Behen</a>
+  <div class="links"><a href="index.html">Home</a><a href="game.html">Game</a><a href="photos.html" aria-current="page">Photos</a></div>
+</div></nav>
+
+<main class="wrap">
+  <header class="top">
+    <div>
+      <h1>Hamari <span>Photo Wall</span></h1>
+      <p>Bhai-behen ki sabse pyaari tasveerein. Photo jodo, neeche likha naam badlo, aur badi karke dekhne ke liye photo par tap karo.</p>
+    </div>
+    <div class="upl">
+      <label class="btn pink" for="pick">Photo jodo</label>
+      <input id="pick" type="file" accept="image/*" multiple>
+    </div>
+  </header>
+
+  <div class="drop" id="drop">Ya photo yahan kheench kar chhod do</div>
+  <p class="note">Photo sirf is phone ya computer ke browser mein save hoti hain, kisi dusre device par nahi dikhengi. Sabko dikhane ke liye photo mujhe chat mein bhejo, main unhe website mein hamesha ke liye laga dunga.</p>
+  <div class="status" id="status" aria-live="polite"></div>
+
+  <div class="wall" id="wall"></div>
+</main>
+
+<div class="view" id="view" hidden>
+  <img id="vImg" alt="">
+  <p id="vCap"></p>
+  <button class="btn ghost" id="vClose" type="button">Band karo</button>
+</div>
+
+<script>
+(function(){
+  var $=function(i){return document.getElementById(i)};
+  var KEY='bb_photos';
+  var photos=[];
+  try{photos=JSON.parse(localStorage.getItem(KEY)||'[]')||[]}catch(e){photos=[]}
+  var wall=$('wall'), status=$('status');
+
+  function save(){
+    try{localStorage.setItem(KEY,JSON.stringify(photos));return true}
+    catch(e){status.textContent='Jagah bhar gayi hai. Kuch purani photo hata kar phir koshish karo.';return false}
+  }
+  function sampleSvg(kind){
+    var p={
+      a:'<path d="M50 78C18 58 16 28 36 24c8-2 14 4 14 10 0-6 6-12 14-10 20 4 18 34-14 54z" fill="#ff4f81" stroke="#2b1d3a" stroke-width="4" stroke-linejoin="round"/>',
+      b:'<circle cx="50" cy="38" r="22" fill="#ffb703" stroke="#2b1d3a" stroke-width="4"/><path d="M38 44q12 12 24 0" fill="none" stroke="#2b1d3a" stroke-width="4" stroke-linecap="round"/><circle cx="42" cy="34" r="3" fill="#2b1d3a"/><circle cx="58" cy="34" r="3" fill="#2b1d3a"/>',
+      c:'<path d="M20 70l20-44 14 24 10-14 16 34z" fill="#2fd4a0" stroke="#2b1d3a" stroke-width="4" stroke-linejoin="round"/><circle cx="72" cy="22" r="8" fill="#ffb703" stroke="#2b1d3a" stroke-width="3"/>'};
+    return '<svg viewBox="0 0 100 90" aria-hidden="true">'+p[kind]+'</svg>';
+  }
+  function render(){
+    wall.innerHTML='';
+    if(!photos.length){
+      [['a','Yahan pehli photo aayegi'],['b','Hasi wali photo'],['c','Ghoomne wali photo']].forEach(function(s){
+        var d=document.createElement('div');d.className='pol sample';
+        d.innerHTML='<div class="ph">'+sampleSvg(s[0])+'</div><div class="cap">'+s[1]+'</div>';
+        wall.appendChild(d);
+      });
+      return;
+    }
+    photos.forEach(function(p,i){
+      var d=document.createElement('div');d.className='pol';
+      var b=document.createElement('button');b.type='button';b.className='ph';b.setAttribute('aria-label','Photo badi karke dekho');
+      var im=document.createElement('img');im.src=p.src;im.alt=p.cap||'Hamari photo';b.appendChild(im);
+      b.addEventListener('click',function(){openView(i)});
+      var inp=document.createElement('input');inp.className='cap';inp.value=p.cap||'';inp.maxLength=40;inp.setAttribute('aria-label','Photo ka naam');inp.placeholder='Naam likho';
+      inp.addEventListener('input',function(){photos[i].cap=inp.value;im.alt=inp.value||'Hamari photo';save()});
+      var x=document.createElement('button');x.type='button';x.className='del';x.textContent='×';x.setAttribute('aria-label','Photo hatao');
+      x.addEventListener('click',function(){photos.splice(i,1);save();status.textContent='';render()});
+      d.appendChild(b);d.appendChild(inp);d.appendChild(x);wall.appendChild(d);
+    });
+  }
+  function openView(i){
+    $('vImg').src=photos[i].src;$('vImg').alt=photos[i].cap||'';$('vCap').textContent=photos[i].cap||'';$('view').hidden=false;$('vClose').focus();
+  }
+  $('vClose').addEventListener('click',function(){$('view').hidden=true});
+  $('view').addEventListener('click',function(e){if(e.target===$('view'))$('view').hidden=true});
+  addEventListener('keydown',function(e){if(e.key==='Escape')$('view').hidden=true});
+
+  function shrink(file){
+    return new Promise(function(res,rej){
+      var fr=new FileReader();
+      fr.onerror=function(){rej()};
+      fr.onload=function(){
+        var im=new Image();
+        im.onerror=function(){rej()};
+        im.onload=function(){
+          var m=720,s=Math.min(1,m/Math.max(im.width,im.height));
+          var cv=document.createElement('canvas');cv.width=Math.round(im.width*s);cv.height=Math.round(im.height*s);
+          cv.getContext('2d').drawImage(im,0,0,cv.width,cv.height);
+          res(cv.toDataURL('image/jpeg',.78));
+        };
+        im.src=fr.result;
+      };
+      fr.readAsDataURL(file);
+    });
+  }
+  function addFiles(list){
+    var files=[].filter.call(list,function(f){return /^image\//.test(f.type)});
+    if(!files.length){status.textContent='Sirf photo chunni hai.';return}
+    status.textContent='Photo jud rahi hai...';
+    files.reduce(function(chain,f){
+      return chain.then(function(){return shrink(f).then(function(src){photos.push({src:src,cap:''})},function(){})});
+    },Promise.resolve()).then(function(){
+      var ok=save();render();if(ok)status.textContent='Photo jud gayi! Neeche naam bhi likh do.';
+    });
+  }
+  $('pick').addEventListener('change',function(e){addFiles(e.target.files);e.target.value=''});
+  var dz=$('drop');
+  ['dragenter','dragover'].forEach(function(n){dz.addEventListener(n,function(e){e.preventDefault();dz.classList.add('over')})});
+  ['dragleave','drop'].forEach(function(n){dz.addEventListener(n,function(e){e.preventDefault();dz.classList.remove('over')})});
+  dz.addEventListener('drop',function(e){if(e.dataTransfer&&e.dataTransfer.files)addFiles(e.dataTransfer.files)});
+  render();
+})();
+</script>
+</body></html>
